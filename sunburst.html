@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Flight Cancellations Sunburst | Carlos Gracia Ruiz</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+:root { --ink:#172033; --muted:#596579; --line:#e5eaf1; --paper:#f7f9fc; --blue:#273449; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+.wrap { max-width:1240px; margin:0 auto; padding:28px 22px 34px; }
+header { background:#fff; border:1px solid var(--line); border-radius:20px; padding:26px 28px 20px; box-shadow:0 8px 28px rgba(24,39,75,.05); }
+.kicker { text-transform:uppercase; letter-spacing:.13em; color:#4263eb; font-size:12px; font-weight:800; }
+h1 { font-size:clamp(27px,4vw,43px); line-height:1.08; letter-spacing:-.035em; margin:10px 0 12px; }
+.subtitle { color:var(--muted); font-size:16px; line-height:1.55; max-width:850px; margin:0; }
+.credit { margin-top:17px; padding-top:13px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; line-height:1.6; }
+.layout { display:grid; grid-template-columns:minmax(0,1fr) 285px; gap:18px; margin-top:18px; align-items:start; }
+.panel { background:#fff; border:1px solid var(--line); border-radius:20px; padding:14px; box-shadow:0 8px 28px rgba(24,39,75,.04); }
+#chart { width:100%; min-height:590px; }
+.side { padding:20px; }
+.side h2 { font-size:16px; margin:0 0 10px; }
+.side p, .side li { color:var(--muted); font-size:13px; line-height:1.6; }
+.side ul { padding-left:18px; }
+.stat { border-top:1px solid var(--line); padding-top:12px; margin-top:14px; }
+.stat strong { display:block; font-size:24px; letter-spacing:-.03em; }
+.stat span { color:var(--muted); font-size:12px; }
+.source { margin-top:18px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:16px 19px; color:var(--muted); font-size:12px; line-height:1.65; }
+a { color:#3157cc; }
+.note { font-size:12px; color:var(--muted); }
+@media (max-width:850px) { .layout { grid-template-columns:1fr; } #chart { min-height:500px; } .wrap { padding:14px; } header { padding:22px 20px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Data Visualization · PEC 2 · Sunburst</div>
+  <h1>Flight Cancellations: Exploring the Causes</h1>
+  <p class="subtitle">Explore reported domestic airline cancellations in India from 2021 to 2023. The sunburst groups cancellations by cause, year and airline; larger sectors represent more reported cancellations.</p>
+  <div class="credit"><strong>Author:</strong> Carlos Gracia Ruiz &nbsp;·&nbsp; <strong>Programme:</strong> Master’s Degree in Data Science<br><strong>Course:</strong> Data Visualization · PEC 2</div>
+</header>
+<div class="layout">
+  <section class="panel"><div id="chart"></div></section>
+  <aside class="panel side">
+    <h2>How to read it</h2>
+    <p>Start at the centre and click a segment to zoom into that branch. Use the centre label or the chart’s navigation controls to move back up the hierarchy.</p>
+    <ul>
+      <li><strong>Inner ring:</strong> cancellation cause.</li>
+      <li><strong>Middle ring:</strong> year (2021–2023).</li>
+      <li><strong>Outer ring:</strong> airline.</li>
+      <li><strong>Area:</strong> reported cancellation count.</li>
+    </ul>
+    <div class="stat"><strong>24,758</strong><span>reported cancellations across the five cause categories and three years</span></div>
+    <div class="stat"><strong>5</strong><span>cause categories: technical, commercial, operational, weather and miscellaneous</span></div>
+    <div class="stat"><strong>2021–2023</strong><span>period covered by the source tables</span></div>
+    <p class="note">Zero-valued airline/cause combinations are omitted from the outer ring to keep the chart readable.</p>
+  </aside>
+</div>
+<div class="source">
+  <strong>Data source:</strong> Government of India, Ministry of Civil Aviation, Rajya Sabha Unstarred Question No. 192, “Delayed Flights Due to Extreme Weather”, answered 5 February 2024, Annexure I, pp. 3–4.<br>
+  <a href="https://sansad.in/getFile/annex/263/AU192.pdf?source=pqars" target="_blank" rel="noopener">Open official parliamentary PDF</a> ·
+  <a href="https://dataful.in/datasets/19649/" target="_blank" rel="noopener">Dataset description and metadata (Dataful / DGCA)</a><br>
+  <span class="note">Scope and caveats: these are reported cancellation counts for scheduled domestic airlines in India, not a worldwide dataset. Airline coverage varies by year, and counts are absolute values rather than cancellation rates; comparisons do not account for the number of departures operated by each airline.</span>
+</div>
+</div>
+<script>
+const d = {"labels": ["Flight cancellations", "Technical", "2021", "Air India", "IndiGo", "Spice Jet", "Trujet", "Pawan Hans", "Alliance Air", "Air Asia", "Go First", "Air Taxi", "Star Air", "Fly Big", "Vistara", "2022", "IndiGo", "Alliance Air", "Spice Jet", "Air India", "Fly Big", "Star Air", "Air Asia", "Go First", "Akasa Air", "Vistara", "2023", "IndiGo", "Indiaone Air", "Alliance Air", "Air India", "Spice Jet", "Air Asia", "Fly Big", "Star Air", "Go First", "Vistara", "Akasa Air", "Commercial", "2021", "Air India", "IndiGo", "Alliance Air", "2022", "IndiGo", "Vistara", "Air India", "Alliance Air", "Trujet", "Air Asia", "Star Air", "Fly Big", "Spice Jet", "2023", "IndiGo", "Alliance Air", "Air India", "Vistara", "Operational", "2021", "Air Taxi", "IndiGo", "Spice Jet", "Air India", "Pawan Hans", "Vistara", "Go First", "Fly Big", "Alliance Air", "Air Asia", "Star Air", "Trujet", "2022", "IndiGo", "Alliance Air", "Air India", "Fly Big", "Air Asia", "Go First", "Star Air", "2023", "Alliance Air", "Indiaone Air", "Air India", "Akasa Air", "IndiGo", "Air Asia", "Star Air", "Weather", "2021", "IndiGo", "Air India", "Vistara", "Pawan Hans", "Air Asia", "Alliance Air", "Star Air", "Fly Big", "Spice Jet", "2022", "IndiGo", "Spice Jet", "Alliance Air", "Fly Big", "Vistara", "Air Asia", "Air India", "Go First", "Akasa Air", "2023", "IndiGo", "Alliance Air", "Spice Jet", "Air India", "Fly Big", "Vistara", "Air Asia", "Indiaone Air", "Star Air", "Go First", "Akasa Air", "Miscellaneous", "2021", "Air India", "Trujet", "IndiGo", "Vistara", "Star Air", "Spice Jet", "Pawan Hans", "Alliance Air", "Fly Big", "2022", "Spice Jet", "Vistara", "Air India", "Star Air", "Alliance Air", "Fly Big", "2023", "IndiGo", "Spice Jet", "Vistara", "Alliance Air", "Air India", "Star Air", "Indiaone Air", "Akasa Air"], "parents": ["", "root", "cause-Technical", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "Technical-2021", "cause-Technical", "Technical-2022", "Technical-2022", "Technical-2022", "Technical-2022", "Technical-2022", "Technical-2022", "Technical-2022", "Technical-2022", "Technical-2022", "Technical-2022", "cause-Technical", "Technical-2023", "Technical-2023", "Technical-2023", "Technical-2023", "Technical-2023", "Technical-2023", "Technical-2023", "Technical-2023", "Technical-2023", "Technical-2023", "Technical-2023", "root", "cause-Commercial", "Commercial-2021", "Commercial-2021", "Commercial-2021", "cause-Commercial", "Commercial-2022", "Commercial-2022", "Commercial-2022", "Commercial-2022", "Commercial-2022", "Commercial-2022", "Commercial-2022", "Commercial-2022", "Commercial-2022", "cause-Commercial", "Commercial-2023", "Commercial-2023", "Commercial-2023", "Commercial-2023", "root", "cause-Operational", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "Operational-2021", "cause-Operational", "Operational-2022", "Operational-2022", "Operational-2022", "Operational-2022", "Operational-2022", "Operational-2022", "Operational-2022", "cause-Operational", "Operational-2023", "Operational-2023", "Operational-2023", "Operational-2023", "Operational-2023", "Operational-2023", "Operational-2023", "root", "cause-Weather", "Weather-2021", "Weather-2021", "Weather-2021", "Weather-2021", "Weather-2021", "Weather-2021", "Weather-2021", "Weather-2021", "Weather-2021", "cause-Weather", "Weather-2022", "Weather-2022", "Weather-2022", "Weather-2022", "Weather-2022", "Weather-2022", "Weather-2022", "Weather-2022", "Weather-2022", "cause-Weather", "Weather-2023", "Weather-2023", "Weather-2023", "Weather-2023", "Weather-2023", "Weather-2023", "Weather-2023", "Weather-2023", "Weather-2023", "Weather-2023", "Weather-2023", "root", "cause-Miscellaneous", "Miscellaneous-2021", "Miscellaneous-2021", "Miscellaneous-2021", "Miscellaneous-2021", "Miscellaneous-2021", "Miscellaneous-2021", "Miscellaneous-2021", "Miscellaneous-2021", "Miscellaneous-2021", "cause-Miscellaneous", "Miscellaneous-2022", "Miscellaneous-2022", "Miscellaneous-2022", "Miscellaneous-2022", "Miscellaneous-2022", "Miscellaneous-2022", "cause-Miscellaneous", "Miscellaneous-2023", "Miscellaneous-2023", "Miscellaneous-2023", "Miscellaneous-2023", "Miscellaneous-2023", "Miscellaneous-2023", "Miscellaneous-2023", "Miscellaneous-2023"], "values": [24758, 4224, 931, 316, 188, 136, 84, 74, 56, 34, 17, 14, 9, 2, 1, 1184, 613, 179, 151, 122, 54, 24, 13, 12, 10, 6, 2109, 931, 424, 324, 181, 150, 33, 32, 18, 11, 4, 1, 1792, 490, 459, 24, 7, 1165, 772, 120, 100, 96, 44, 13, 12, 6, 2, 137, 74, 34, 27, 2, 5755, 3662, 1361, 897, 610, 302, 130, 122, 95, 44, 37, 27, 19, 18, 1379, 1210, 67, 56, 20, 14, 7, 5, 714, 358, 90, 89, 73, 72, 22, 10, 10352, 4735, 2353, 1715, 421, 94, 91, 21, 21, 11, 8, 2407, 1476, 278, 244, 188, 68, 64, 55, 30, 4, 3210, 2185, 323, 186, 168, 148, 89, 55, 30, 20, 4, 2, 2635, 1100, 501, 167, 162, 108, 65, 45, 24, 14, 14, 278, 102, 63, 46, 29, 28, 10, 1257, 996, 96, 79, 29, 23, 14, 12, 8], "ids": ["root", "cause-Technical", "Technical-2021", "Technical-2021-Air India", "Technical-2021-IndiGo", "Technical-2021-Spice Jet", "Technical-2021-Trujet", "Technical-2021-Pawan Hans", "Technical-2021-Alliance Air", "Technical-2021-Air Asia", "Technical-2021-Go First", "Technical-2021-Air Taxi", "Technical-2021-Star Air", "Technical-2021-Fly Big", "Technical-2021-Vistara", "Technical-2022", "Technical-2022-IndiGo", "Technical-2022-Alliance Air", "Technical-2022-Spice Jet", "Technical-2022-Air India", "Technical-2022-Fly Big", "Technical-2022-Star Air", "Technical-2022-Air Asia", "Technical-2022-Go First", "Technical-2022-Akasa Air", "Technical-2022-Vistara", "Technical-2023", "Technical-2023-IndiGo", "Technical-2023-Indiaone Air", "Technical-2023-Alliance Air", "Technical-2023-Air India", "Technical-2023-Spice Jet", "Technical-2023-Air Asia", "Technical-2023-Fly Big", "Technical-2023-Star Air", "Technical-2023-Go First", "Technical-2023-Vistara", "Technical-2023-Akasa Air", "cause-Commercial", "Commercial-2021", "Commercial-2021-Air India", "Commercial-2021-IndiGo", "Commercial-2021-Alliance Air", "Commercial-2022", "Commercial-2022-IndiGo", "Commercial-2022-Vistara", "Commercial-2022-Air India", "Commercial-2022-Alliance Air", "Commercial-2022-Trujet", "Commercial-2022-Air Asia", "Commercial-2022-Star Air", "Commercial-2022-Fly Big", "Commercial-2022-Spice Jet", "Commercial-2023", "Commercial-2023-IndiGo", "Commercial-2023-Alliance Air", "Commercial-2023-Air India", "Commercial-2023-Vistara", "cause-Operational", "Operational-2021", "Operational-2021-Air Taxi", "Operational-2021-IndiGo", "Operational-2021-Spice Jet", "Operational-2021-Air India", "Operational-2021-Pawan Hans", "Operational-2021-Vistara", "Operational-2021-Go First", "Operational-2021-Fly Big", "Operational-2021-Alliance Air", "Operational-2021-Air Asia", "Operational-2021-Star Air", "Operational-2021-Trujet", "Operational-2022", "Operational-2022-IndiGo", "Operational-2022-Alliance Air", "Operational-2022-Air India", "Operational-2022-Fly Big", "Operational-2022-Air Asia", "Operational-2022-Go First", "Operational-2022-Star Air", "Operational-2023", "Operational-2023-Alliance Air", "Operational-2023-Indiaone Air", "Operational-2023-Air India", "Operational-2023-Akasa Air", "Operational-2023-IndiGo", "Operational-2023-Air Asia", "Operational-2023-Star Air", "cause-Weather", "Weather-2021", "Weather-2021-IndiGo", "Weather-2021-Air India", "Weather-2021-Vistara", "Weather-2021-Pawan Hans", "Weather-2021-Air Asia", "Weather-2021-Alliance Air", "Weather-2021-Star Air", "Weather-2021-Fly Big", "Weather-2021-Spice Jet", "Weather-2022", "Weather-2022-IndiGo", "Weather-2022-Spice Jet", "Weather-2022-Alliance Air", "Weather-2022-Fly Big", "Weather-2022-Vistara", "Weather-2022-Air Asia", "Weather-2022-Air India", "Weather-2022-Go First", "Weather-2022-Akasa Air", "Weather-2023", "Weather-2023-IndiGo", "Weather-2023-Alliance Air", "Weather-2023-Spice Jet", "Weather-2023-Air India", "Weather-2023-Fly Big", "Weather-2023-Vistara", "Weather-2023-Air Asia", "Weather-2023-Indiaone Air", "Weather-2023-Star Air", "Weather-2023-Go First", "Weather-2023-Akasa Air", "cause-Miscellaneous", "Miscellaneous-2021", "Miscellaneous-2021-Air India", "Miscellaneous-2021-Trujet", "Miscellaneous-2021-IndiGo", "Miscellaneous-2021-Vistara", "Miscellaneous-2021-Star Air", "Miscellaneous-2021-Spice Jet", "Miscellaneous-2021-Pawan Hans", "Miscellaneous-2021-Alliance Air", "Miscellaneous-2021-Fly Big", "Miscellaneous-2022", "Miscellaneous-2022-Spice Jet", "Miscellaneous-2022-Vistara", "Miscellaneous-2022-Air India", "Miscellaneous-2022-Star Air", "Miscellaneous-2022-Alliance Air", "Miscellaneous-2022-Fly Big", "Miscellaneous-2023", "Miscellaneous-2023-IndiGo", "Miscellaneous-2023-Spice Jet", "Miscellaneous-2023-Vistara", "Miscellaneous-2023-Alliance Air", "Miscellaneous-2023-Air India", "Miscellaneous-2023-Star Air", "Miscellaneous-2023-Indiaone Air", "Miscellaneous-2023-Akasa Air"], "markerColors": ["#273449", "#4263eb", "#91a7ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#91a7ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#91a7ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#0f9d8a", "#63e6be", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#63e6be", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#63e6be", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#e67700", "#ffd8a8", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#ffd8a8", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#ffd8a8", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#c2255c", "#faa2c1", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#faa2c1", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#faa2c1", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#7950f2", "#d0bfff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#d0bfff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#d0bfff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff", "#dbe4ff"]};
+const trace = {
+  type: "sunburst",
+  ids: d.ids,
+  labels: d.labels,
+  parents: d.parents,
+  values: d.values,
+  branchvalues: "total",
+  maxdepth: 3,
+  sort: true,
+  insidetextorientation: "radial",
+  textinfo: "label",
+  hovertemplate: "<b>%{label}</b><br>Reported cancellations: %{value:,}<extra></extra>",
+  marker: {line: {width: 1.5, color: "#ffffff"}},
+  leaf: {opacity: 0.9},
+  root: {color: "#273449"},
+  tiling: {pad: 3}
+};
+const layout = {
+  margin: {t: 18, l: 8, r: 8, b: 8},
+  paper_bgcolor: "#ffffff",
+  plot_bgcolor: "#ffffff",
+  font: {family: "Inter, system-ui, sans-serif", color: "#172033", size: 12},
+  uniformtext: {minsize: 10, mode: "hide"},
+  sunburstcolorway: ["#4263eb","#0f9d8a","#e67700","#c2255c","#7950f2"],
+  extendsunburstcolors: true
+};
+Plotly.newPlot("chart", [trace], layout, {responsive:true, displaylogo:false, modeBarButtonsToRemove:["lasso2d","select2d"]});
+</script>
+</body>
+</html>
