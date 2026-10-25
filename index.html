@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Global Airport Network | Treemap</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<style>
+:root{--navy:#0b1f33;--blue:#1677a6;--ink:#182b3a;--muted:#617383;--paper:#f4f7fa;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+header{background:var(--navy);color:white;padding:34px max(22px,calc((100vw - 1180px)/2)) 27px}
+.kicker{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#8ed5f3;font-weight:700}
+h1{font-size:clamp(28px,4vw,44px);line-height:1.08;margin:10px 0 12px;max-width:850px}
+header p{max-width:800px;line-height:1.6;color:#d9e5ed;margin:0}
+main{max-width:1180px;margin:25px auto;padding:0 18px}
+.row{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:15px}
+.metric{background:white;border:1px solid #e1e8ee;border-radius:12px;padding:14px 18px;min-width:175px;flex:1}
+.metric small{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.8px}
+.metric strong{display:block;font-size:25px;margin-top:5px}
+.panel{background:white;border:1px solid #e1e8ee;border-radius:14px;padding:12px 12px 4px;box-shadow:0 4px 18px #0b1f3308}
+#chart{width:100%;height:610px}
+.note{font-size:13px;line-height:1.6;color:var(--muted);margin:15px 2px}
+footer{border-top:1px solid #dce5eb;margin-top:22px;padding:17px 2px 30px;font-size:12px;color:var(--muted);line-height:1.6}
+a{color:#126c98} .status{font-size:13px;color:var(--muted);padding:10px 3px}
+@media(max-width:600px){#chart{height:520px}.metric{min-width:130px}header{padding-top:26px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Aviation data · Treemap</div>
+  <h1>The Global Airport Network</h1>
+  <p>Where are the world’s airports? Explore how recorded airports are distributed across continents and countries. Each rectangle represents a country; its area is proportional to the number of airports in the selected dataset.</p>
+</header>
+<main>
+  <div class="row">
+    <div class="metric"><small>Airports included</small><strong id="total">Loading…</strong></div>
+    <div class="metric"><small>Countries / territories</small><strong id="countries">—</strong></div>
+    <div class="metric"><small>Continents represented</small><strong id="continents">—</strong></div>
+  </div>
+  <div class="panel">
+    <div id="status" class="status">Loading the latest public OurAirports CSV data…</div>
+    <div id="chart"></div>
+  </div>
+  <p class="note"><strong>How to read it:</strong> larger rectangles indicate more airports recorded in OurAirports. Hover over a country for its count and share; click a continent or country to zoom in, and use the breadcrumb at the top of the chart to move back up the hierarchy.</p>
+  <footer>
+    <strong>Data and method.</strong> Source: <a href="https://ourairports.com/data/" target="_blank" rel="noopener">OurAirports open-data downloads</a> (airports.csv and countries.csv). Counts include records classified as <em>large_airport</em>, <em>medium_airport</em>, or <em>small_airport</em>; heliports, seaplane bases, balloonports and closed-airport records are excluded. Country names are joined using the country-code table. The dataset is community-maintained and may contain omissions or errors; counts describe this database, not airport traffic, passenger volume or commercial importance. The CSVs are fetched from the public data mirror when the page opens. Last accessed: 25 October 2026.
+  </footer>
+</main>
+<script>
+const AIRPORTS_URL='https://davidmegginson.github.io/ourairports-data/airports.csv';
+const COUNTRIES_URL='https://davidmegginson.github.io/ourairports-data/countries.csv';
+const eligible = new Set(['large_airport','medium_airport','small_airport']);
+const pretty = {'AF':'Africa','AN':'Antarctica','AS':'Asia','EU':'Europe','NA':'North America','OC':'Oceania','SA':'South America'};
+function parseCSV(url){return new Promise((resolve,reject)=>Papa.parse(url,{download:true,header:true,skipEmptyLines:true,transformHeader:h=>h.replace(/^\uFEFF/,'').trim().toLowerCase(),transform:v=>typeof v==='string'?v.trim():v,complete:r=>{if(r.errors && r.errors.length && !r.data.length) reject(r.errors[0]); else resolve(r.data)},error:reject}));}
+function fmt(n){return n.toLocaleString('en-US');}
+async function draw(){
+ const status=document.getElementById('status');
+ try{
+  const [airports,countries] = await Promise.all([parseCSV(AIRPORTS_URL),parseCSV(COUNTRIES_URL)]);
+  if(!airports.length) throw new Error('The airport CSV returned no rows.');
+  const countryInfo = new Map(countries.map(c=>[c.code,{name:c.name,continent:c.continent}]));
+  const counts = new Map();
+  let kept=0;
+  for(const a of airports){
+    const type=(a.type||'').toLowerCase();
+    if(!eligible.has(type) || !a.iso_country) continue;
+    const info=countryInfo.get(a.iso_country);
+    const cont=(a.continent|| (info&&info.continent)||'').trim();
+    if(!cont) continue;
+    const key=cont+'|'+a.iso_country;
+    counts.set(key,(counts.get(key)||0)+1); kept++;
+  }
+  if(!counts.size) {
+    const airportFields=Object.keys(airports[0]||{}).join(', ');
+    const countryFields=Object.keys(countries[0]||{}).join(', ');
+    throw new Error('CSV loaded, but no records matched. Airport columns: '+airportFields+'. Country columns: '+countryFields);
+  }
+  const byContinent = new Map();
+  for(const [key,n] of counts){
+    const [cont,code]=key.split('|'), info=countryInfo.get(code)||{};
+    if(!byContinent.has(cont)) byContinent.set(cont,[]);
+    byContinent.get(cont).push({code,name:info.name||code,n});
+  }
+  const labels=['World'], parents=[''], values=[0], ids=['world'];
+  let total=0, countryN=0;
+  for(const [cont,items] of [...byContinent.entries()].sort((a,b)=>(pretty[a[0]]||a[0]).localeCompare(pretty[b[0]]||b[0]))){
+    const contId='cont-'+cont;
+    const continentTotal=items.reduce((sum,item)=>sum+item.n,0);
+    labels.push(pretty[cont]||cont);parents.push('world');values.push(continentTotal);ids.push(contId);
+    items.sort((a,b)=>b.n-a.n);
+    for(const item of items){
+      labels.push(item.name);parents.push(contId);values.push(item.n);ids.push(contId+'-'+item.code);
+      total+=item.n;countryN++;
+    }
+  }
+  values[0]=total;
+  document.getElementById('total').textContent=fmt(total);
+  document.getElementById('countries').textContent=fmt(countryN);
+  document.getElementById('continents').textContent=byContinent.size;
+  status.textContent='Loaded '+fmt(kept)+' airport records. Click a continent to inspect its countries.';
+  Plotly.newPlot('chart',[{
+    type:'treemap',labels,parents,values,ids,
+    branchvalues:'total',maxdepth:2,textinfo:'label+value',
+    hovertemplate:'<b>%{label}</b><br>Recorded airports: %{value:,}<br>Share of dataset: %{percentRoot:.2%}<extra></extra>',
+    pathbar:{visible:true,textfont:{size:13}},
+    tiling:{pad:3,squarifyratio:1.15},
+    marker:{line:{width:2,color:'#ffffff'},colors:values,colorscale:[[0,'#d7edf5'],[0.25,'#8ccfe4'],[0.6,'#368eae'],[1,'#124c70']],showscale:false},
+    root:{color:'#e8f1f5'}
+  }],{
+    margin:{t:10,l:5,r:5,b:8},paper_bgcolor:'#ffffff',plot_bgcolor:'#ffffff',
+    font:{family:'Inter, Segoe UI, Arial, sans-serif',color:'#182b3a'},
+    uniformtext:{minsize:10,mode:'hide'}
+  },{responsive:true,displaylogo:false,modeBarButtonsToRemove:['lasso2d','select2d']});
+ }catch(e){
+  status.textContent='Could not build the treemap: '+e.message+' Open the data source links in the footer to check connectivity.';
+  console.error(e);
+ }
+}
+draw();
+</script>
+</script>
+</body>
+</html>
