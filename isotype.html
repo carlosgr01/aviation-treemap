@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Air Passenger Markets | Isotype & Unit Chart | Carlos Gracia Ruiz</title>
+<style>
+:root { --ink:#172033; --muted:#5d687a; --line:#e5eaf1; --paper:#f7f9fc; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; }
+.wrap { max-width:1240px; margin:0 auto; padding:28px 22px 36px; }
+header,.panel,.source { background:#fff; border:1px solid var(--line); border-radius:20px; box-shadow:0 8px 28px rgba(24,39,75,.045); }
+header { padding:26px 28px 20px; }
+.kicker { text-transform:uppercase; letter-spacing:.13em; color:#4263eb; font-size:12px; font-weight:800; }
+h1 { font-size:clamp(27px,4vw,43px); line-height:1.08; letter-spacing:-.035em; margin:10px 0 12px; }
+.subtitle { color:var(--muted); font-size:16px; line-height:1.6; max-width:900px; margin:0; }
+.credit { margin-top:17px; padding-top:13px; border-top:1px solid var(--line); color:var(--muted); font-size:13px; line-height:1.6; }
+.grid { display:grid; grid-template-columns:1fr; gap:18px; margin-top:18px; }
+.panel { padding:22px; }
+.panel h2 { margin:0 0 6px; font-size:20px; }
+.intro { color:var(--muted); font-size:13px; line-height:1.55; margin:0 0 18px; }
+.legend { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:12px 0 20px; color:var(--muted); font-size:13px; }
+.symbol { font-size:21px; vertical-align:middle; }
+.market { padding:15px 0 18px; border-top:1px solid var(--line); }
+.market-head { display:flex; justify-content:space-between; gap:12px; align-items:baseline; margin-bottom:10px; }
+.country { font-weight:750; font-size:16px; }
+.total { font-weight:800; font-variant-numeric:tabular-nums; }
+.units { display:flex; flex-wrap:wrap; gap:5px; line-height:1; }
+.unit { width:24px; height:27px; display:inline-flex; align-items:center; justify-content:center; font-size:22px; filter:saturate(.95); }
+.unit.partial { opacity:.42; }
+.unit-count { font-size:12px; color:var(--muted); margin-top:8px; }
+.split { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+.callout { background:#f2f5fb; border-radius:12px; padding:14px 16px; font-size:13px; color:#435067; line-height:1.6; }
+.source { margin-top:18px; padding:16px 19px; color:var(--muted); font-size:12px; line-height:1.7; }
+a { color:#3157cc; }
+@media(max-width:760px) { .wrap {padding:14px} header {padding:22px 20px} .split {grid-template-columns:1fr} .panel {padding:17px} .unit {width:21px;font-size:19px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">Data Visualization · PEC 2 · Isotype & Unit Charts</div>
+  <h1>Air Passenger Markets in 2024</h1>
+  <p class="subtitle">A pictogram-based comparison of six major national passenger markets. Every full airplane symbol represents 50 million passengers, turning large values into countable visual units.</p>
+  <div class="credit"><strong>Author:</strong> Carlos Gracia Ruiz &nbsp;·&nbsp; <strong>Programme:</strong> Master’s Degree in Data Science<br><strong>Course:</strong> Data Visualization · PEC 2</div>
+</header>
+<div class="grid">
+  <section class="panel">
+    <h2>Isotype-style pictogram chart</h2>
+    <p class="intro">Each repeated airplane represents 50 million passengers. The exact total is printed alongside each country; the faded airplane at the end represents any remaining fraction of 50 million.</p>
+    <div class="legend"><span class="symbol">✈</span> = 50 million passengers <span style="opacity:.42" class="symbol">✈</span> = remainder, scaled to the same unit</div>
+    <div id="chart"></div>
+  </section>
+  <section class="panel">
+    <h2>Unit chart: compare the counts</h2>
+    <p class="intro">This second view emphasizes the number of countable units rather than using a continuous bar. Each square is one 50-million-passenger unit; the final partial unit is shown as a fraction.</p>
+    <div id="unitChart"></div>
+  </section>
+  <div class="split">
+    <div class="callout"><strong>What stands out?</strong><br>The United States and China are substantially larger passenger markets than the other four countries in this selected group. Spain, India and Japan are relatively close to one another in the reported figures.</div>
+    <div class="callout"><strong>Interpret with care</strong><br>These figures represent passengers arriving or departing in each country, not passengers carried by individual airlines. They are absolute totals, so they do not measure population-adjusted travel, airline reliability or the number of flights.</div>
+  </div>
+</div>
+<div class="source">
+  <strong>Source:</strong> International Air Transport Association (IATA), “IATA Launches 2024 World Air Transport Statistics Report”, 4 August 2025, section “Top Passenger Markets in 2024”.<br>
+  <a href="https://www.iata.org/en/pressroom/2025-releases/2025-08-04-01/" target="_blank" rel="noopener">Open the IATA source</a><br>
+  <strong>Unit:</strong> millions of passengers. Each full pictogram equals 50 million passengers; the fractional final symbol is scaled to represent the remainder. Values shown: United States 876m; China 741m; United Kingdom 261m; Spain 241m; India 211m; Japan 205m.
+</div>
+</div>
+<script>
+const markets = [{"country": "United States", "code": "US", "passengers": 876, "color": "#3157cc", "icons": 17, "remainder": 26}, {"country": "China", "code": "CN", "passengers": 741, "color": "#d9485f", "icons": 14, "remainder": 41}, {"country": "United Kingdom", "code": "UK", "passengers": 261, "color": "#0f9d8a", "icons": 5, "remainder": 11}, {"country": "Spain", "code": "ES", "passengers": 241, "color": "#e67700", "icons": 4, "remainder": 41}, {"country": "India", "code": "IN", "passengers": 211, "color": "#7950f2", "icons": 4, "remainder": 11}, {"country": "Japan", "code": "JP", "passengers": 205, "color": "#c2255c", "icons": 4, "remainder": 5}];
+const chart = document.getElementById("chart");
+const unitChart = document.getElementById("unitChart");
+for (const m of markets) {
+  const row = document.createElement("div");
+  row.className = "market";
+  const head = document.createElement("div");
+  head.className = "market-head";
+  head.innerHTML = `<span class="country">${m.country}</span><span class="total">${m.passengers} million</span>`;
+  const units = document.createElement("div");
+  units.className = "units";
+  const full = Math.floor(m.passengers / 50);
+  const rem = m.passengers % 50;
+  for (let i=0; i<full; i++) {
+    const s=document.createElement("span");
+    s.className="unit";
+    s.style.color=m.color;
+    s.textContent="✈";
+    s.title="50 million passengers";
+    units.appendChild(s);
+  }
+  if (rem>0) {
+    const s=document.createElement("span");
+    s.className="unit partial";
+    s.style.color=m.color;
+    s.style.opacity=String(0.18 + 0.62*(rem/50));
+    s.textContent="✈";
+    s.title=`Remaining ${rem} million passengers`;
+    units.appendChild(s);
+  }
+  const note=document.createElement("div");
+  note.className="unit-count";
+  note.textContent=`${full} full units of 50m` + (rem ? ` + ${rem}m remainder` : "");
+  row.appendChild(head); row.appendChild(units); row.appendChild(note);
+  chart.appendChild(row);
+
+  const urow=document.createElement("div");
+  urow.className="market";
+  const uhead=document.createElement("div");
+  uhead.className="market-head";
+  uhead.innerHTML=`<span class="country">${m.country}</span><span class="total">${m.passengers}m</span>`;
+  const squares=document.createElement("div");
+  squares.className="units";
+  for(let i=0;i<full;i++) {
+    const sq=document.createElement("span");
+    sq.style.cssText=`display:inline-block;width:20px;height:20px;border-radius:4px;background:${m.color}`;
+    sq.title="50 million passengers";
+    squares.appendChild(sq);
+  }
+  if(rem>0) {
+    const sq=document.createElement("span");
+    sq.style.cssText=`display:inline-block;width:${20*rem/50}px;height:20px;border-radius:4px;background:${m.color};opacity:.55`;
+    sq.title=`Remaining ${rem} million passengers`;
+    squares.appendChild(sq);
+  }
+  urow.appendChild(uhead);urow.appendChild(squares);unitChart.appendChild(urow);
+}
+</script>
+</body>
+</html>
