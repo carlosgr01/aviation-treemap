@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Quién cancela una reserva de hotel?</title>
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+  :root{--ink:#1d1d1b;--mut:#5f5e58;--line:#e3e2dc;--bg:#fbfbf8;--int:#2a6fb8;--prt:#d9622b;--neu:#a3a29b;--acc:#2a6fb8}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Source Sans 3",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:18px;line-height:1.55}
+  header{max-width:860px;margin:0 auto;padding:72px 24px 24px}
+  .kicker{color:var(--mut);font-size:14px;letter-spacing:.06em;text-transform:uppercase}
+  h1{font-family:Georgia,"Times New Roman",serif;font-size:46px;line-height:1.1;margin:10px 0 16px;font-weight:700}
+  .lead{font-size:21px;color:#33322e;max-width:720px}
+  .kpis{display:flex;gap:40px;flex-wrap:wrap;margin:36px 0 8px}
+  .kpi b{display:block;font-family:Georgia,serif;font-size:44px;line-height:1}
+  .kpi span{color:var(--mut);font-size:15px}
+  .scrolly{display:flex;gap:40px;max-width:1180px;margin:40px auto 0;padding:0 24px}
+  .steps{flex:0 0 360px}
+  .step{min-height:80vh;display:flex;align-items:center}
+  .step .card{background:#fff;border:1px solid var(--line);border-radius:6px;padding:22px 24px;opacity:.35;transition:opacity .3s}
+  .step.on .card{opacity:1}
+  .step h2{font-family:Georgia,serif;font-size:24px;margin:0 0 8px;line-height:1.2}
+  .step p{margin:8px 0}
+  .sticky{flex:1;position:sticky;top:6vh;height:88vh;display:flex;flex-direction:column;justify-content:center}
+  #chart{width:100%;height:68vh}
+  .ctitle{font-weight:600;font-size:18px;margin:0 0 2px}
+  .csub{color:var(--mut);font-size:14px;margin:0 0 6px}
+  .note{color:var(--mut);font-size:13px;margin-top:4px}
+  .int{color:var(--int);font-weight:600}.prt{color:var(--prt);font-weight:600}
+  section.explore,section.end{max-width:960px;margin:40px auto;padding:0 24px}
+  section h2.big{font-family:Georgia,serif;font-size:32px;margin:0 0 8px}
+  .controls{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0 4px}
+  .controls label{font-size:14px;color:var(--mut);display:flex;flex-direction:column;gap:4px}
+  select{font:inherit;font-size:16px;padding:6px 8px;border:1px solid #c9c8c1;border-radius:4px;background:#fff}
+  #explore{width:100%;height:440px}
+  .take{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px;margin:20px 0}
+  .take div{background:#fff;border:1px solid var(--line);border-radius:6px;padding:18px}
+  .take b{display:block;font-family:Georgia,serif;font-size:19px;margin-bottom:6px}
+  footer{max-width:960px;margin:60px auto 40px;padding:20px 24px;border-top:1px solid var(--line);color:var(--mut);font-size:14px}
+  footer a{color:var(--mut)}
+  @media (max-width:860px){.scrolly{flex-direction:column-reverse}.steps{flex:none}.sticky{position:sticky;top:0;height:52vh;background:var(--bg);z-index:2}#chart{height:40vh}h1{font-size:34px}.step{min-height:70vh}}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">Dos hoteles en Portugal · 2015–2017 · 117.395 reservas</div>
+  <h1>¿Quién cancela una reserva de hotel?</h1>
+  <p class="lead">Parecía que los clientes portugueses cancelaban más del doble que los extranjeros. Al revisar los datos con calma, la pista buena era otra: <b>cuánto tiempo falta para la llegada</b>.</p>
+  <div class="kpis">
+    <div class="kpi"><b>37,5 %</b><span>de las reservas se cancelan</span></div>
+    <div class="kpi"><b>44.009</b><span>reservas canceladas</span></div>
+    <div class="kpi"><b>2</b><span>hoteles: uno urbano (Lisboa) y un resort (Algarve)</span></div>
+  </div>
+</header>
+
+<div class="scrolly">
+  <div class="steps">
+    <div class="step" data-step="0"><div class="card">
+      <h2>Más de un tercio de las reservas no llega</h2>
+      <p>De cada 100 reservas, unas 38 se cancelan. Para un hotel es un problema serio: habitaciones que se quedan vacías o que hay que revender a última hora.</p>
+      <p>El hotel urbano cancela bastante más que el resort.</p>
+    </div></div>
+    <div class="step" data-step="1"><div class="card">
+      <h2>La primera pista: el país del cliente</h2>
+      <p>Si separamos por origen, la diferencia es enorme: los <span class="prt">residentes en Portugal</span> cancelan el 58 % de sus reservas y los <span class="int">clientes internacionales</span>, el 24 %.</p>
+      <p>Es la conclusión fácil. Pero antes de darla por buena conviene comprobar si se mantiene.</p>
+    </div></div>
+    <div class="step" data-step="2"><div class="card">
+      <h2>Primer matiz: los depósitos «no reembolsables»</h2>
+      <p>El 30 % de las reservas portuguesas tiene depósito no reembolsable, y el 99,4 % de esas reservas se cancela. Casi todas son de <b>grupos y agencias</b>, en el hotel urbano y con unos seis meses de antelación.</p>
+      <p>Si las apartamos, la diferencia se reduce: del 58 % al <b>40 %</b> frente al 23 %.</p>
+    </div></div>
+    <div class="step" data-step="3"><div class="card">
+      <h2>Segundo matiz: el país se confirma al llegar</h2>
+      <p>Si comparamos por canal (solo reservas sin depósito), en grupos y agencias tradicionales los clientes internacionales <b>casi nunca</b> cancelan: entre el 1 y el 2 %. No es creíble.</p>
+      <p>El artículo que describe los datos avisa de que el hotel a menudo no conoce la nacionalidad real hasta el <i>check-in</i>, y una reserva cancelada nunca llega a ese momento. Donde el cliente reserva por sí mismo (agencia online), la diferencia es mucho menor: 46 % frente a 35 %.</p>
+      <p>Algo parecido pasa con el aparcamiento: de 7.304 reservas con plaza, <b>ninguna</b> se canceló.</p>
+    </div></div>
+    <div class="step" data-step="4"><div class="card">
+      <h2>Lo que sí se sostiene: la antelación</h2>
+      <p>La antelación se conoce desde el primer momento, así que no tiene ese problema. Y separa muy bien las reservas: con menos de una semana se cancela el 10 %; con más de seis meses, el 57 %.</p>
+      <p>El salto aparece en los dos hoteles y en los dos orígenes, aunque en los clientes internacionales se estabiliza a partir del primer mes.</p>
+    </div></div>
+    <div class="step" data-step="5"><div class="card">
+      <h2>Y el compromiso del cliente</h2>
+      <p>Con la misma antelación, quien hace al menos una petición especial (cama, planta, cuna…) cancela aproximadamente la mitad que quien no pide nada.</p>
+      <p>Es una señal de compromiso, aunque hay que tomarla con cautela: algunas peticiones también pueden añadirse cerca de la llegada.</p>
+    </div></div>
+  </div>
+  <div class="sticky">
+    <p class="ctitle" id="ctitle"></p>
+    <p class="csub" id="csub"></p>
+    <div id="chart"></div>
+    <p class="note" id="cnote"></p>
+  </div>
+</div>
+
+<section class="explore">
+  <h2 class="big">Explóralo tú</h2>
+  <p>Elige un hotel, un origen y el tipo de depósito para ver cómo cambia la cancelación según la antelación. Pasa el ratón por los puntos para ver el número de reservas de cada grupo.</p>
+  <div class="controls">
+    <label>Hotel<select id="fH"><option>Todos</option><option value="City Hotel">Urbano (Lisboa)</option><option value="Resort Hotel">Resort (Algarve)</option></select></label>
+    <label>Origen<select id="fO"><option>Todos</option><option value="International">Internacional</option><option value="Portugal Resident">Portugal</option></select></label>
+    <label>Depósito<select id="fD"><option>Todos</option><option value="No Deposit">Solo sin depósito</option></select></label>
+  </div>
+  <div id="explore"></div>
+</section>
+
+<section class="end">
+  <h2 class="big">Qué nos llevamos</h2>
+  <div class="take">
+    <div><b>Mirar la antelación, no el pasaporte</b>Las reservas hechas con más de un mes de antelación concentran el riesgo. Es la variable más fiable porque se conoce desde el momento de la reserva.</div>
+    <div><b>Cuidado con los datos que se escriben al llegar</b>País, aparcamiento o habitación asignada se completan en el check-in. Usarlos para explicar cancelaciones mezcla causa y consecuencia.</div>
+    <div><b>Los grupos merecen un análisis aparte</b>Los bloques de agencias con depósito no reembolsable se cancelan casi siempre y distorsionan cualquier media.</div>
+  </div>
+  <p class="note">Limitaciones: son solo dos hoteles de Portugal entre julio de 2015 y agosto de 2017; las tasas son descriptivas y no demuestran relaciones causales. Datos limpiados según el notebook de la asignatura (se excluyen reservas con 5 o más adultos, niños o bebés, tarifas ≤ 0 o ≥ 1.000 € y estancias sin noches o sin huéspedes).</p>
+</section>
+
+<footer>
+  <b>Carlos Gracia Ruiz</b> — Máster Universitario en Ciencia de Datos (UOC) — Visualización de datos · PEC 3<br>
+  Datos: Antonio, N., de Almeida, A. y Nunes, L. (2019). <i>Hotel booking demand datasets</i>. Data in Brief, 22, 41–49. <a href="https://doi.org/10.1016/j.dib.2018.11.126">doi:10.1016/j.dib.2018.11.126</a>. Gráficos: Plotly.js.
+</footer>
+
+<script>
+const D = {"n":117395,"ncanc":44009,"rate":37.5,"hotel":{"City Hotel":[42.2,78089],"Resort Hotel":[28.1,39306]},"origin":{"International":[23.8,69904],"Portugal Resident":[58.1,47024]},"origin_noNR":{"International":[23.4,69507],"Portugal Resident":[40.2,32849]},"nr":{"n":14586,"rate":99.4,"prt_share":97.2,"prt_bookings_share":30.1,"int_bookings_share":0.6,"groups_offline":97.2,"lead_med":183.0},"prt_year":{"2015":{"canc":93.1,"nocanc":39.8},"2016":{"canc":60.9,"nocanc":26.1},"2017":{"canc":47.7,"nocanc":20.9}},"seg":{"Corporate":{"International":[1.8,985],"Portugal Resident":[17.3,3709]},"Direct":{"International":[10.9,6544],"Portugal Resident":[20.6,5637]},"Groups":{"International":[1.8,5343],"Portugal Resident":[58.1,4908]},"Offline TA/TO":{"International":[1.2,12082],"Portugal Resident":[46.0,6749]},"Online TA":{"International":[34.5,44294],"Portugal Resident":[46.0,11647]}},"parking":{"n":7304,"canc":0},"lead":{"Todos|Todos|Todos":[[9.7,18601],[28.1,18647],[37.9,29292],[44.9,26304],[57.2,24551]],"Todos|Todos|No Deposit":[[9.2,18474],[26.3,18125],[32.4,26879],[35.0,22125],[38.5,17044]],"Todos|International|Todos":[[5.8,8868],[21.9,12366],[26.3,19497],[29.1,16729],[27.3,12444]],"Todos|International|No Deposit":[[5.8,8856],[21.9,12323],[26.2,19452],[28.7,16528],[26.3,12234]],"Todos|Portugal Resident|Todos":[[13.5,9433],[40.8,6212],[61.1,9758],[72.7,9550],[87.9,12071]],"Todos|Portugal Resident|No Deposit":[[12.6,9318],[36.0,5733],[48.7,7390],[53.8,5572],[69.6,4788]],"City Hotel|Todos|Todos":[[12.4,10012],[31.2,12389],[40.1,20649],[48.1,18157],[64.2,16882]],"City Hotel|Todos|No Deposit":[[11.8,9930],[28.6,11926],[33.0,18447],[36.0,14702],[40.8,10197]],"City Hotel|International|Todos":[[7.5,5700],[25.1,8841],[28.9,14263],[32.7,11806],[31.5,7512]],"City Hotel|International|No Deposit":[[7.5,5694],[25.0,8828],[28.8,14246],[32.2,11727],[31.2,7479]],"City Hotel|Portugal Resident|Todos":[[18.9,4310],[46.4,3548],[65.2,6386],[76.8,6351],[90.5,9356]],"City Hotel|Portugal Resident|No Deposit":[[17.6,4234],[38.6,3098],[47.2,4201],[50.7,2975],[67.3,2718]],"Resort Hotel|Todos|Todos":[[6.5,8589],[22.1,6258],[32.7,8643],[37.6,8147],[41.7,7669]],"Resort Hotel|Todos|No Deposit":[[6.2,8544],[21.9,6199],[31.1,8432],[33.1,7423],[35.1,6847]],"Resort Hotel|International|Todos":[[2.8,3168],[13.7,3525],[19.5,5234],[20.4,4923],[21.0,4932]],"Resort Hotel|International|No Deposit":[[2.8,3162],[13.8,3495],[19.1,5206],[20.1,4801],[18.6,4755]],"Resort Hotel|Portugal Resident|Todos":[[9.0,5123],[33.3,2664],[53.4,3372],[64.5,3199],[79.2,2715]],"Resort Hotel|Portugal Resident|No Deposit":[[8.5,5084],[32.9,2635],[50.7,3189],[57.3,2597],[72.7,2070]]},"lead_labels":["0–7 días","8–30","31–90","91–180","Más de 180"],"sr":{"0":[[12.1,11117],[35.9,9505],[48.8,16202],[58.0,15511],[69.9,16787]],"1":[[6.0,5349],[21.5,6176],[25.4,8863],[26.6,7126],[28.6,5204]],"2":[[6.2,2135],[17.3,2966],[22.5,4227],[24.8,3667],[32.0,2560]]},"repeat":{"0":[38.1,114124],"1":[16.2,3271]},"lead_overall":[[9.7,18601],[28.1,18647],[37.9,29292],[44.9,26304],[57.2,24551]]};
+const C = {int:"#2a6fb8", prt:"#d9622b", neu:"#a3a29b", dark:"#1d1d1b", city:"#4b4a45", resort:"#9a988f"};
+const FONT = {family:'"Source Sans 3",system-ui,sans-serif', size:15, color:"#1d1d1b"};
+const L = D.lead_labels;
+const base = (extra={}) => Object.assign({
+  font: FONT, paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)",
+  margin:{l:60,r:20,t:10,b:50}, showlegend:false, hoverlabel:{font:FONT, bgcolor:"#fff"},
+  yaxis:{range:[0,105], ticksuffix:" %", gridcolor:"#e8e7e1", zeroline:false, title:{text:"% de reservas canceladas", font:{size:13,color:"#5f5e58"}}},
+  xaxis:{gridcolor:"rgba(0,0,0,0)", tickfont:{size:15}}
+}, extra);
+const cfg = {displayModeBar:false, responsive:true};
+const bar = (xs, ys, ns, cols) => ({type:"bar", x:xs, y:ys, marker:{color:cols}, width:.55,
+  text:ys.map(v=>v.toFixed(1).replace(".",",")+" %"), textposition:"outside", textfont:{size:16},
+  customdata:ns, hovertemplate:"%{x}<br>%{y:.1f} % canceladas<br>%{customdata:,} reservas<extra></extra>", cliponaxis:false});
+
+const steps = [
+  () => ({t:"Porcentaje de reservas canceladas por tipo de hotel", s:"Total de reservas tras la limpieza de datos",
+    data:[bar(["Hotel urbano (Lisboa)","Resort (Algarve)","Total"],[D.hotel["City Hotel"][0],D.hotel["Resort Hotel"][0],D.rate],[D.hotel["City Hotel"][1],D.hotel["Resort Hotel"][1],D.n],[C.city,C.resort,C.dark])],
+    layout:base(), n:""}),
+  () => ({t:"Porcentaje de reservas canceladas según el origen del cliente", s:"Origen registrado en la reserva",
+    data:[bar(["Internacional","Residente en Portugal"],[D.origin.International[0],D.origin["Portugal Resident"][0]],[D.origin.International[1],D.origin["Portugal Resident"][1]],[C.int,C.prt])],
+    layout:base(), n:"Se excluyen 467 reservas sin país registrado."}),
+  () => {
+    const o=D.origin, q=D.origin_noNR;
+    return {t:"La diferencia se reduce sin los depósitos no reembolsables", s:"Porcentaje de canceladas: todas las reservas frente a reservas sin depósito no reembolsable",
+    data:[
+      {type:"scatter", mode:"lines", x:[o.International[0],q.International[0]], y:["Internacional","Internacional"], line:{color:"#cfcec8",width:6}, hoverinfo:"skip"},
+      {type:"scatter", mode:"lines", x:[o["Portugal Resident"][0],q["Portugal Resident"][0]], y:["Residente en Portugal","Residente en Portugal"], line:{color:"#cfcec8",width:6}, hoverinfo:"skip"},
+      {type:"scatter", mode:"markers+text", x:[o.International[0],o["Portugal Resident"][0]], y:["Internacional","Residente en Portugal"], marker:{size:18,color:"#fff",line:{color:[C.int,C.prt],width:3}},
+        text:["Todas: "+o.International[0].toFixed(1).replace(".",",")+" %","Todas: "+o["Portugal Resident"][0].toFixed(1).replace(".",",")+" %"], textposition:"top center", hovertemplate:"Todas las reservas: %{x:.1f} %<extra></extra>"},
+      {type:"scatter", mode:"markers+text", x:[q.International[0],q["Portugal Resident"][0]], y:["Internacional","Residente en Portugal"], marker:{size:18,color:[C.int,C.prt]},
+        text:["Sin no reembolsables: "+q.International[0].toFixed(1).replace(".",",")+" %","Sin no reembolsables: "+q["Portugal Resident"][0].toFixed(1).replace(".",",")+" %"], textposition:"bottom center", hovertemplate:"Sin depósito no reembolsable: %{x:.1f} %<extra></extra>"}
+    ],
+    layout:base({xaxis:{range:[0,75],ticksuffix:" %",gridcolor:"#e8e7e1",zeroline:false,title:{text:"% de reservas canceladas",font:{size:13,color:"#5f5e58"}}}, yaxis:{automargin:true, tickfont:{size:15}}, margin:{l:170,r:30,t:10,b:60}}),
+    n:"Depósito no reembolsable: "+D.nr.n.toLocaleString("es-ES")+" reservas, "+String(D.nr.rate).replace(".",",")+" % canceladas; el "+String(D.nr.prt_share).replace(".",",")+" % de residentes en Portugal y el "+String(D.nr.groups_offline).replace(".",",")+" % de grupos o agencias offline."};
+  },
+  () => {
+    const segs=["Groups","Offline TA/TO","Corporate","Direct","Online TA"], names=["Grupos","Agencia tradicional","Empresas","Directa","Agencia online"];
+    const tr=(o,name,col)=>({type:"bar",name,x:names,y:segs.map(k=>D.seg[k][o][0]),customdata:segs.map(k=>D.seg[k][o][1]),marker:{color:col},
+      text:segs.map(k=>D.seg[k][o][0].toFixed(0)+" %"),textposition:"outside",cliponaxis:false,hovertemplate:name+" · %{x}<br>%{y:.1f} % canceladas<br>%{customdata:,} reservas<extra></extra>"});
+    return {t:"Porcentaje de canceladas por canal de reserva y origen", s:"Solo reservas sin depósito",
+    data:[tr("International","Internacional",C.int),tr("Portugal Resident","Residente en Portugal",C.prt)],
+    layout:base({barmode:"group", showlegend:true, legend:{orientation:"h", y:1.1, x:0}, yaxis:{range:[0,75],ticksuffix:" %",gridcolor:"#e8e7e1",zeroline:false,title:{text:"% de reservas canceladas",font:{size:13,color:"#5f5e58"}}}}),
+    n:"Un 1–2 % de cancelación en grupos y agencias tradicionales internacionales es poco plausible: apunta a cómo se registra el país, no a cómo se comportan los clientes. Fuente sobre la nacionalidad: Antonio et al. (2019)."};
+  },
+  () => {
+    const k1="City Hotel|Todos|No Deposit", k2="Resort Hotel|Todos|No Deposit", k3="Todos|International|No Deposit", k4="Todos|Portugal Resident|No Deposit";
+    const tr=(k,name,col,dash)=>({type:"scatter",mode:"lines+markers",name,x:L,y:D.lead[k].map(v=>v[0]),customdata:D.lead[k].map(v=>v[1]),line:{color:col,width:3,dash},marker:{size:9},
+      hovertemplate:name+"<br>%{x}: %{y:.1f} %<br>%{customdata:,} reservas<extra></extra>"});
+    return {t:"Porcentaje de canceladas según la antelación de la reserva", s:"Reservas sin depósito, por hotel y por origen",
+    data:[tr(k1,"Hotel urbano",C.city,"solid"),tr(k2,"Resort",C.resort,"solid"),tr(k3,"Internacional",C.int,"dot"),tr(k4,"Portugal",C.prt,"dot")],
+    layout:base({showlegend:true, legend:{orientation:"h", y:1.1, x:0}, yaxis:{range:[0,80],ticksuffix:" %",gridcolor:"#e8e7e1",zeroline:false,title:{text:"% de reservas canceladas",font:{size:13,color:"#5f5e58"}}}, xaxis:{title:{text:"Días entre la reserva y la llegada",font:{size:13,color:"#5f5e58"}}}}),
+    n:"En todas las reservas: "+D.lead_overall.map((v,i)=>L[i]+" → "+v[0].toFixed(0)+" %").join(" · ")};
+  },
+  () => {
+    const tr=(k,name,col)=>({type:"scatter",mode:"lines+markers",name,x:L,y:D.sr[k].map(v=>v[0]),customdata:D.sr[k].map(v=>v[1]),line:{color:col,width:3},marker:{size:9},
+      hovertemplate:name+"<br>%{x}: %{y:.1f} %<br>%{customdata:,} reservas<extra></extra>"});
+    return {t:"Porcentaje de canceladas según la antelación y las peticiones especiales", s:"Todas las reservas",
+    data:[tr("0","Sin peticiones",C.dark),tr("1","1 petición",C.int),tr("2","2 o más peticiones","#8fb3dc")],
+    layout:base({showlegend:true, legend:{orientation:"h", y:1.1, x:0}, yaxis:{range:[0,80],ticksuffix:" %",gridcolor:"#e8e7e1",zeroline:false,title:{text:"% de reservas canceladas",font:{size:13,color:"#5f5e58"}}}, xaxis:{title:{text:"Días entre la reserva y la llegada",font:{size:13,color:"#5f5e58"}}}}),
+    n:"Clientes que repiten: "+String(D.repeat["1"][0]).replace(".",",")+" % de cancelación frente a "+String(D.repeat["0"][0]).replace(".",",")+" % de los nuevos."};
+  }
+];
+
+let cur=-1;
+function show(i){
+  if(i===cur) return; cur=i;
+  const f=steps[i]();
+  document.getElementById("ctitle").textContent=f.t;
+  document.getElementById("csub").textContent=f.s;
+  document.getElementById("cnote").textContent=f.n||"";
+  Plotly.react("chart", f.data, f.layout, cfg);
+}
+const els=[...document.querySelectorAll(".step")];
+const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){els.forEach(s=>s.classList.remove("on"));e.target.classList.add("on");show(+e.target.dataset.step);}})},{rootMargin:"-45% 0px -45% 0px"});
+els.forEach(e=>io.observe(e));
+els[0].classList.add("on"); show(0);
+
+function explore(){
+  const h=document.getElementById("fH").value, o=document.getElementById("fO").value, d=document.getElementById("fD").value;
+  const sel=D.lead[h+"|"+o+"|"+d], all=D.lead["Todos|Todos|Todos"];
+  const col=o==="International"?C.int:o==="Portugal Resident"?C.prt:C.dark;
+  const data=[
+    {type:"scatter",mode:"lines",name:"Todas las reservas",x:L,y:all.map(v=>v[0]),line:{color:"#c9c8c1",width:2,dash:"dot"},hovertemplate:"Todas: %{y:.1f} %<extra></extra>"},
+    {type:"scatter",mode:"lines+markers+text",name:"Selección",x:L,y:sel.map(v=>v[0]),customdata:sel.map(v=>v[1]),line:{color:col,width:3},marker:{size:10},
+      text:sel.map(v=>v[0].toFixed(0)+" %"),textposition:"top center",cliponaxis:false,hovertemplate:"%{x}: %{y:.1f} %<br>%{customdata:,} reservas<extra></extra>"}];
+  Plotly.react("explore",data,base({showlegend:true,legend:{orientation:"h",y:1.12,x:0},xaxis:{title:{text:"Días entre la reserva y la llegada",font:{size:13,color:"#5f5e58"}}}}),cfg);
+}
+["fH","fO","fD"].forEach(id=>document.getElementById(id).addEventListener("change",explore));
+explore();
+</script>
+</body>
+</html>
